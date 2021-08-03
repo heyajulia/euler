@@ -1,0 +1,7 @@
+*
+!.gitignore
+!*.zig
+!*.raku
+!*.c
+!*.py
+!*.txt
