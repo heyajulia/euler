@@ -8,6 +8,7 @@
  */
 
 #include <gmp.h>
+#include <stdio.h>
 
 int main()
 {
@@ -15,11 +16,12 @@ int main()
 
     mpz_init(result);
 
-    mpz_ui_pow_ui(result, 2, 7830457); // result = 2⁷⁸³⁰⁴⁵⁷;
-    mpz_mul_ui(result, result, 28433); // result *= 28433;
-    mpz_add_ui(result, result, 1);     // result += 1;
+    mpz_ui_pow_ui(result, 2, 7830457);                                // result = 2 ** 7830457;
+    mpz_mul_ui(result, result, 28433);                                // result *= 28433;
+    mpz_add_ui(result, result, 1);                                    // result += 1;
+    unsigned long last_ten_digits = mpz_fdiv_ui(result, 10000000000); // result % 10000000000;
 
-    gmp_printf("%Zd\n", result);
+    printf("%lu\n", last_ten_digits);
 
     mpz_clear(result);
 }
