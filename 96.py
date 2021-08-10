@@ -1,6 +1,6 @@
+import dataclasses
 import random
 from typing import NoReturn
-import dataclasses
 
 
 @dataclasses.dataclass(eq=True, frozen=True)
@@ -29,7 +29,6 @@ class Cell:
 class Grid:
     def __init__(self, cells: list[Cell]) -> None:
         self._cells = cells
-        self._boxes = ((0, 2, 0, 3),)
 
     def put(self, cell: Cell, value: int) -> None:
         self._cells[self._cells.index(cell)] = dataclasses.replace(cell, value=value)
@@ -39,7 +38,7 @@ class Grid:
 
     def columns(self) -> list[list[Cell]]:
         return [self.column(r) for r in range(9)]
-    
+
     def boxes(self) -> list[list[Cell]]:
         return [self.box(r) for r in range(9)]
 
@@ -48,8 +47,9 @@ class Grid:
 
     def column(self, column: int) -> list[Cell]:
         return list(filter(lambda cell: cell.column == column, self._cells))
-    
+
     def box(self, box: int) -> list[Cell]:
+        # fmt: off
         if box == 0:
             return [
                 self.row(0)[0:3],
@@ -104,6 +104,7 @@ class Grid:
                 self.row(7)[6:9],
                 self.row(8)[6:9]
             ]
+        # fmt: on
 
     def __iter__(self):
         return iter(self._cells)
@@ -129,18 +130,9 @@ class Sudoku:
         self._grid = Grid(cells)
 
     def solve(self) -> "SolvedSudoku":
-        for cell in self._grid:
-            row = cell.row
-            column = cell.column
-
-            self._put(cell, random.randint(1, 9))
-
         while len(mistakes := self._check_mistakes()) != 0:
             for cell in mistakes:
-                row = cell.row
-                column = cell.column
-
-                self._put(row, column, Cell(row, column, random.randint(1, 9)))
+                self._put(cell, random.randint(1, 9))
 
         return SolvedSudoku(self._grid)
 
@@ -165,7 +157,7 @@ class Sudoku:
                 if value in seen_values:
                     mistakes.append(cell)
 
-                seen_values.add(cell)
+                seen_values.add(value)
 
         return mistakes
 
@@ -181,7 +173,7 @@ class Sudoku:
                 if value in seen_values:
                     mistakes.append(cell)
 
-                seen_values.add(cell)
+                seen_values.add(value)
 
         return mistakes
 
@@ -194,7 +186,7 @@ class Sudoku:
             for row in box:
                 for cell in row:
                     cells.append(cell)
-    
+
             seen_values = set()
 
             for cell in cells:
@@ -203,7 +195,7 @@ class Sudoku:
                 if value in seen_values:
                     mistakes.append(cell)
 
-                seen_values.add(cell)
+                seen_values.add(value)
 
         return mistakes
 
